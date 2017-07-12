@@ -1,0 +1,4 @@
+-DURL.WAS_V7_64-bit_performance.pdf=https://daytrader-ee6-dev-07052017.mybluemix.net/daytrader/WAS_V7_64-bit_performance.pdf
+-Xms384m
+-Xmx1024m
+
