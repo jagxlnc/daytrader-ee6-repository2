@@ -40,6 +40,7 @@ import com.ibm.websphere.samples.daytrader.util.Log;
         @NamedQuery(name = "accountejb.findByLastlogin", query = "SELECT a FROM accountejb a WHERE a.lastLogin = :lastlogin"),
         @NamedQuery(name = "accountejb.findByLogincount", query = "SELECT a FROM accountejb a WHERE a.loginCount = :logincount")
     })
+
 public class AccountDataBean implements Serializable {
 
     private static final long serialVersionUID = 8437841265136840545L;
