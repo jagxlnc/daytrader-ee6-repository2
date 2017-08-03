@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.ibm.websphere.samples.daytrader</groupId>
+	<artifactId>daytrader-ee6</artifactId>
+	<packaging>ear</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<properties>
+
+<!--     <docker.registry>http://registry.docker.hub.com/</docker.registry> -->
+<!--     <push.image>true</push.image>                                      -->
+	
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+
+		<!-- Liberty server properties -->
+		<wlpServerName>Daytrader3Sample</wlpServerName>
+
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.ibm.websphere.samples.daytrader</groupId>
+			<artifactId>Rest</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.websphere.samples.daytrader</groupId>
+			<artifactId>dt-ejb</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.websphere.samples.daytrader</groupId>
+			<artifactId>web</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.3</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.6</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.8.2</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>2.22.2</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-ear-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<version>6</version>
+					<defaultLibBundleDir>lib</defaultLibBundleDir>
+
+					<modules>
+						<ejbModule>
+							<groupId>com.ibm.websphere.samples.daytrader</groupId>
+							<artifactId>dt-ejb</artifactId>
+							<bundleFileName>dt-ejb.jar</bundleFileName>
+							<!-- More configuration can be set here -->
+						</ejbModule>
+						<webModule>
+							<groupId>com.ibm.websphere.samples.daytrader</groupId>
+							<artifactId>web</artifactId>
+							<contextRoot>/daytrader</contextRoot>
+							<uri>web.war</uri>
+							<bundleFileName>web.war</bundleFileName>
+							<!-- More configuration can be set here -->
+						</webModule>
+						<webModule>
+							<groupId>com.ibm.websphere.samples.daytrader</groupId>
+							<artifactId>Rest</artifactId>
+							<contextRoot>/rest</contextRoot>
+							<uri>Rest.war</uri>
+							<bundleFileName>Rest.war</bundleFileName>
+							<!-- More configuration can be set here -->
+						</webModule>
+
+						<jarModule>
+							<groupId>commons-logging</groupId>
+							<artifactId>commons-logging</artifactId>
+							<!-- More configuration can be set here -->
+						</jarModule>
+						<jarModule>
+							<groupId>log4j</groupId>
+							<artifactId>log4j</artifactId>
+							<bundleFileName>log4j.jar</bundleFileName>
+							<!-- More configuration can be set here -->
+						</jarModule>
+						<jarModule>
+							<groupId>org.apache.logging.log4j</groupId>
+							<artifactId>log4j-core</artifactId>
+							<bundleFileName>log4j-core.jar</bundleFileName>
+							<!-- More configuration can be set here -->
+						</jarModule>
+
+					</modules>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.18.1</version>
+				<executions>
+					<execution>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+						<configuration>
+							<systemPropertyVariables>
+<!-- uncomment for onpremise integragtion test
+								<daytrader.app.route>http://localhost:9080</daytrader.app.route>
+-->
+<!--  uncomment for container integration test -->
+								<daytrader.app.route>http://192.168.99.101:9080</daytrader.app.route>
+							</systemPropertyVariables>
+							<testSourceDirectory>src/test/java</testSourceDirectory>
+							<includes>
+								<include>**/*Test.java</include>
+							</includes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>verify-results</id>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<id>copy-server-config</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/wlp/usr/servers/${wlpServerName}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/src/main/liberty/config</directory>
+									<includes>
+										<include>**/*</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-app</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/wlp/usr/servers/${wlpServerName}/dropins</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}</directory>
+									<includes>
+										<include>${project.artifactId}-${project.version}.ear</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<!-- uncomment for docker -->
+					<execution> <id>copy-dockerfile</id> <phase>package</phase> 
+						<goals> <goal>copy-resources</goal> </goals> <configuration> <outputDirectory>${project.build.directory}</outputDirectory> 
+						<resources> <resource> <directory>${project.basedir}/src/main/resources/docker</directory> 
+						<includes> <include>Dockerfile</include> </includes> </resource> </resources> 
+						</configuration> 
+					</execution> 
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>net.wasdev.wlp.maven.plugins</groupId>
+				<artifactId>liberty-maven-plugin</artifactId>
+				<version>2.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverName>${wlpServerName}</serverName>
+					<assemblyArtifact>
+						<groupId>com.ibm.websphere.appserver.runtime</groupId>
+						<artifactId>wlp-kernel</artifactId>
+						<version>17.0.0.2</version>
+						<type>zip</type>
+					</assemblyArtifact>
+					<assemblyInstallDirectory>${project.build.directory}</assemblyInstallDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>install-liberty</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>install-server</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>package-app</id>
+						<phase>package</phase>
+						<goals>
+							<goal>package-server</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>install-feature</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>install-feature</goal>
+						</goals>
+						<configuration>
+							<features>
+								<acceptLicense>true</acceptLicense>
+								<feature>jsf-2.0</feature>
+								<feature>localconnector-1.0</feature>
+								<feature>wasjmsserver-1.0</feature>
+								<feature>jaxrs-1.1</feature>
+								<feature>ejblite-3.1</feature>
+								<feature>jpa-2.0</feature>
+								<feature>jmsmdb-3.1</feature>
+								<feature>wasjmsclient-1.1</feature>
+							</features>
+						</configuration>
+					</execution>
+					<execution>
+						<id>start-server</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start-server</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>stop-server</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop-server</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- uncomment for docker -->
+			<plugin> 
+				<groupId>com.spotify</groupId> 
+				<artifactId>dockerfile-maven-plugin</artifactId> 
+				<version>1.3.3</version> 
+				<executions> <execution> 
+				<phase>package</phase> 
+				<goals> <goal>build</goal> </goals> 
+				</execution> 
+				</executions> 
+				<configuration> 
+				<dockerHost>192.168.99.101</dockerHost> <contextDirectory>${project.build.directory}</contextDirectory> 
+				<repository>dhvines/${project.artifactId}</repository> <tag>${project.version}</tag> 
+				</configuration> 
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>
+
+
