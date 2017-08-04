@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -33,6 +34,7 @@ import javax.ws.rs.Produces;
 import com.ibm.websphere.samples.daytrader.AccountDataBean;
 import com.ibm.websphere.samples.daytrader.AccountProfileDataBean;
 import com.ibm.websphere.samples.daytrader.HoldingDataBean;
+import com.ibm.websphere.samples.daytrader.OrderDataBean;
 import com.ibm.websphere.samples.daytrader.TradeServices;
 import com.ibm.websphere.samples.daytrader.direct.TradeDirect;
 
@@ -135,6 +137,126 @@ public class Accounts {
 			@PathParam(value = "creditcard") String creditcard, 
 			@PathParam(value = "openBalance") BigDecimal openBalance) throws Exception {
 		return impl.register(userID, password, fullname, address, email, creditcard, openBalance);
+	}
+    
+    //
+    // Orders are tightly coupled to accounts wrt database queries
+    //
+
+	/**
+     * @see TradeServices#buy(String, String, double)
+     */
+    @POST
+    @Path("/{userID}/orders/{symbol}/{quantity}/{orderProcessingMode}")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+	public OrderDataBean buy(@PathParam(value = "userID") String userID, @PathParam(value = "symbol") String symbol, 
+			@PathParam(value = "quantity") double quantity, 
+			@PathParam(value = "orderProcessingMode") int orderProcessingMode) throws Exception {
+		return impl.buy(userID, symbol, quantity, orderProcessingMode);
+	}	
+    
+	/**
+     * @see TradeServices#sell(String, Integer)
+     */
+    @POST
+    @Path("/{userID}/orders/{holdingID}/{orderProcessingMode}")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+	public OrderDataBean sell(@PathParam(value = "userID") String userID, @PathParam(value = "holdingID") Integer holdingID, 
+			@PathParam(value = "orderProcessingMode") int orderProcessingMode) throws Exception {
+		return impl.sell(userID, holdingID, orderProcessingMode);
+	}
+    
+    //
+    // Note: although the daytrader monolith  does not use the userid in this implementation, 
+    // i feel as if it should still be passed in simply because of the tight coupling between 
+    // the account and orders in the database. of course, this smight also be an area for the
+    // subsequent separation of orders from accounts but to do so you will need to eliminate
+    // the tight coupling in the database (e.g. the queries over accounts and orders table)
+    //
+    
+	/**
+     * @see TradeServices#queueOrder(Integer, boolean)
+     */
+    @PUT
+    @Path("{userid}/orders/{orderID}/{twoPhase}")
+    @Consumes({"application/json"})
+	public void queueOrder(@PathParam(value = "userID") Integer userID, @PathParam(value = "orderID") Integer orderID, 
+			@PathParam(value = "twoPhase") boolean twoPhase) throws Exception {
+		impl.queueOrder(orderID, twoPhase);
+	}
+    
+    //
+    // Note: although the daytrader monolith  does not use the userid in this implementation, 
+    // i feel as if it should still be passed in simply because of the tight coupling between 
+    // the account and orders in the database. of course, this smight also be an area for the
+    // subsequent separation of orders from accounts but to do so you will need to eliminate
+    // the tight coupling in the database (e.g. the queries over accounts and orders table)
+    //
+    
+	/**
+     * @see TradeServices#completeOrder(Integer, boolean)
+     */
+    @POST
+    @Path("{userid}/orders/{orderID}/{twoPhase}")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    public OrderDataBean completeOrder(@PathParam(value = "userID") Integer userID, @PathParam(value = "orderID") Integer orderID, 
+    		@PathParam(value = "twoPhase") boolean twoPhase) throws Exception {
+		return impl.completeOrder(orderID, twoPhase);
+	}
+
+    //
+    // Note: although the daytrader monolith  does not use the userid in this implementation, 
+    // i feel as if it should still be passed in simply because of the tight coupling between 
+    // the account and orders in the database. of course, this smight also be an area for the
+    // subsequent separation of orders from accounts but to do so you will need to eliminate
+    // the tight coupling in the database (e.g. the queries over accounts and orders table)
+    //
+    
+	/**
+     * @see TradeServices#cancelOrder(Integer, boolean)
+     */
+    @DELETE
+    @Path("{userid}/orders/{orderID}/{twoPhase}")
+    @Consumes({"application/json"})
+	public void cancelOrder(@PathParam(value = "userID") Integer userID, @PathParam(value = "orderID") Integer orderID, 
+			@PathParam(value = "twoPhase") boolean twoPhase) throws Exception {
+		throw new UnsupportedOperationException( "TradeDirect:cancelOrder method not supported" );
+	}
+
+	/**
+     * @see TradeServices#orderCompleted(String, Integer)
+     */
+    @PUT
+    @Path("/{userID/orders/{orderID}/{twoPhase}")
+    @Consumes({"application/json"})
+	public void orderCompleted(@PathParam(value = "userID") String userID, 
+			@PathParam(value = "orderID") Integer orderID) throws Exception {
+		throw new UnsupportedOperationException( "TradeDirect:orderCompleted method not supported" );
+	}
+
+	/**
+     * @see TradeServices#getOrders(String)
+     */
+    @GET
+    @Path("/{userID}/orders")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+	public Collection<OrderDataBean> getOrders(@PathParam(value = "userID") String userID) throws Exception {
+		return impl.getOrders(userID);
+	}
+    
+	/**
+     * @see TradeServices#getClosedOrders(String)
+     */
+    @GET
+    @Path("/{userID}/closedorders")
+    @Produces({"application/json"})
+    @Consumes({"application/json"})
+    public Collection<OrderDataBean> getClosedOrders(@PathParam(value = "userID") String userID) throws Exception {
+		return impl.getOrders(userID);
 	}
 
 }
