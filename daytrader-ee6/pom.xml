@@ -272,14 +272,14 @@
 						<configuration>
 							<features>
 								<acceptLicense>true</acceptLicense>
-								<feature>jsf-2.0</feature>
 								<feature>localconnector-1.0</feature>
+							<!--	<feature>jsf-2.0</feature>
 								<feature>wasjmsserver-1.0</feature>
 								<feature>jaxrs-1.1</feature>
 								<feature>ejblite-3.1</feature>
 								<feature>jpa-2.0</feature>
 								<feature>jmsmdb-3.1</feature>
-								<feature>wasjmsclient-1.1</feature>
+								<feature>wasjmsclient-1.1</feature>-->
 							</features>
 						</configuration>
 					</execution>
@@ -304,7 +304,7 @@
 			<plugin> 
 				<groupId>com.spotify</groupId> 
 				<artifactId>docker-maven-plugin</artifactId> 
-				<version>0.2.3</version> 
+				<version>0.4.13</version> 
 				<executions> 
 					<execution> 
 						<phase>package</phase> 
