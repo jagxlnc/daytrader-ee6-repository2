@@ -325,6 +325,10 @@
     <groupId>io.fabric8</groupId>
     <artifactId>docker-maven-plugin</artifactId>
     <version>0.20.1</version>
+    <configuration> 
+	    <dockerHost>https://192.168.99.100:2376</dockerHost>
+            <dockerCertPath>/Users/Shared/Jenkins/daytraderCerts</dockerCertPath>
+    </configuration> 
     <executions>
         <execution>
             <id>start</id>
@@ -344,7 +348,7 @@
                             </ports>
                             <wait>
                                 <log>(?s)The server defaultServer is ready to run a smarter planet.</log>
-                                <time>20000</time>
+                                <time>200000</time>
                             </wait>
                         </run>
                     </image>
