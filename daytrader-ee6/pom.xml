@@ -165,7 +165,7 @@
 								<daytrader.app.route>http://localhost:9080</daytrader.app.route>
 -->
 <!--  uncomment for container integration test -->
-								<daytrader.app.route>http://192.168.254.9:9080</daytrader.app.route>
+								<daytrader.app.route>http://192.168.99.100:9080</daytrader.app.route>
 							</systemPropertyVariables>
 							<testSourceDirectory>src/test/java</testSourceDirectory>
 							<includes>
