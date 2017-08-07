@@ -316,8 +316,8 @@
 				<configuration> 
 					<dockerDirectory>${project.build.directory}</dockerDirectory> 
 					<imageName>dhvines/${project.artifactId}:${project.version}</imageName>
-					<dockerHost>https://192.168.99.100:2376</dockerHost>
-                			<dockerCertPath>/Users/Shared/Jenkins/daytraderCerts</dockerCertPath>
+					<!--<dockerHost>https://192.168.99.100:2376</dockerHost>
+                			<dockerCertPath>/Users/Shared/Jenkins/daytraderCerts</dockerCertPath>-->
 				</configuration> 
 			</plugin>
 
@@ -325,10 +325,10 @@
     <groupId>io.fabric8</groupId>
     <artifactId>docker-maven-plugin</artifactId>
     <version>0.20.1</version>
-    <configuration> 
+    <!--<configuration> 
 	    <dockerHost>https://192.168.99.100:2376</dockerHost>
             <dockerCertPath>/Users/Shared/Jenkins/daytraderCerts</dockerCertPath>
-    </configuration> 
+    </configuration> -->
     <executions>
         <execution>
             <id>start</id>
